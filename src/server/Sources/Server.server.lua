@@ -35,17 +35,23 @@ Players.PlayerAdded:Connect(function(player)
         _G[player.UserId][v]:OnUpdate(OnUpdate)
     end
     --Load Selected Character
-    print(_G[player.UserId])
-    local Sel_Char = CharacterSelector:FindFirstChild(_G[player.UserId][DataKey[1]]:Get())
-    print(Sel_Char)
-    if Sel_Char and Sel_Char:IsA("Model") then
-        local cloned_ = Sel_Char:Clone()
-        cloned_.Parent = workspace.Char
-        cloned_.PrimaryPart.CFrame = Char_Pos.CFrame
-    else
-        warn("Can't not find character")
-        player:Kick("Data Error")
-    end
+    task.delay(2,function()
+        print(_G[player.UserId])
+        local Sel_Char = CharacterSelector:FindFirstChild(_G[player.UserId][DataKey[1]]:Get())
+        print(Sel_Char)
+        if Sel_Char and Sel_Char:IsA("Model") then
+            local cloned_ = Sel_Char:Clone()
+            cloned_.Parent = workspace.Char
+            cloned_.PrimaryPart.CFrame = Char_Pos.CFrame
+            local AnimControl,Animations = cloned_:FindFirstChildWhichIsA("AnimationController"),cloned_:WaitForChild("Animations")
+            if AnimControl and Animations then
+                AnimControl:LoadAnimation(Animations:WaitForChild("Selector")):Play(0)
+            end
+        else
+            warn("Can't not find character")
+            player:Kick("Data Error")
+        end
+    end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
